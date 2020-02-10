@@ -1,6 +1,18 @@
 const mine_value = -1;
 const hidden_value = null;
+
+
+
+
 /** Class represents a the game logic of minesweeper. 
+ * @todo implement left click (open)
+ * @todo implement right click (add mine marker)
+ * @todo implement middle click (click on number to open neighbouring tiles if mine markers === number) Loop through neighbours check for mine. If not mine open neighbours.
+ * @todo implement game over state.
+ * @todo implement new game
+ * @todo implement different difficulties
+ * @todo change visible board to html table to prevent html to redraw everything for each click.
+ * @todo change input to difficulty? or leave possibility for custom?
  */
 class Game {
 
@@ -12,13 +24,10 @@ class Game {
      */
     constructor(rows, cols, num_mines) {
         this.board = new Board(rows, cols, num_mines);
-        
+        this.mines = this.board.get_mines();
         this.game_board = this.board.get_board();
         console.table(this.game_board);
         this.visible_board = this.generate_visible_board(this.game_board.length, this.game_board[0].length);
-        
-
-
 
 
         /* TODO:
@@ -64,6 +73,7 @@ class Game {
          * Recursive part
          * @param {number} row - selected row
          * @param {number} col - selected column
+         * @todo maybe optimize code. Prevent backtrack. (~12,5% performance increase?)
          */
         function ant(row, col) {
             //console.log(row, col);
@@ -99,8 +109,6 @@ class Game {
 
                     //south-west
                     if (row < max_row && col > 0) ant(row + 1, col - 1);
-
-
                 }
             }
         }
@@ -212,8 +220,10 @@ class Board {
         }
 
     }
-
-    get_mines(){
+    /**
+     * @returns {[number,number][]} An array containing the location of mines
+     */
+    get_mines() {
         return this.mines;
     }
 
@@ -227,10 +237,43 @@ class Board {
 
 }
 
+
+class Html_GUI{
+    constructor(){
+
+    }
+
+    draw_board(){
+
+    }
+
+    update_board(){
+
+    }
+
+    clear_board(){
+
+    }
+
+    draw_info(){
+
+    }
+
+
+}
+
+
+// TODO: Change input to difficulty
+function start_game(rows, cols, num_mines) {
+    const game = new Game(rows, cols, num_mines);
+}
+
+start_game(20, 20, 100);
+
 //var board = new Board(20, 20, 100);
 
 //console.table(board.get_board());
 //console.log(board.get_board());
 
-var test = new Game(20,20,40);
+
 
