@@ -1,0 +1,53 @@
+.game_board{
+    background-color: teal;
+}
+
+.game_board  td{
+    width: 20px;
+    height: 20px;
+    background-color: darkgray;
+    text-align: center;
+    user-select: none;
+    font-weight: bold;
+}
+
+.game_board td:hover{
+    background-color: gray;
+}
+
+/*
+ return "mine";
+        }
+        const classes = ["mines_0", "mines_1", "mines_2", "mines_3", "mines_4", "mines_5", "mines_6", "mines_7", "mines_8"];
+        */
+.not_opened{
+    background-color: bisque !important;
+}
+
+.mine{
+    background-color: red !important; 
+}
+
+.mines_0{
+    color: rgba(0, 0, 0, 0.0);
+}
+
+.mines_1{
+    color: blue;
+}
+
+.mines_2{
+    color: green;
+}
+
+.mines_3{
+    color: red;
+}
+
+.mines_4{
+    color: purple;
+}
+
+.mines_5{
+    color: orange;
+}

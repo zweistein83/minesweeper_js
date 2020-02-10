@@ -33,8 +33,8 @@ class Game {
         /* TODO:
             - make mouse listener as input for this
         */
-        this.army_of_ants(7, 2, this.visible_board, this.game_board);
-        console.table(this.visible_board);
+
+
 
 
     }
@@ -54,6 +54,11 @@ class Game {
             }
         }
         return board
+    }
+
+    open_tile(row, col) {
+        this.army_of_ants(row, col, this.visible_board, this.game_board);
+        console.table(this.visible_board);
     }
 
 
@@ -238,25 +243,105 @@ class Board {
 }
 
 
-class Html_GUI{
-    constructor(){
+class Html_GUI {
+    constructor(rows, cols) {
+        this.table = this.draw_board(rows, cols);        
+        this.rows = rows;
+        this.cols = cols;
+
 
     }
 
-    draw_board(){
+
+
+    draw_board(rows, cols) {
+        let table = document.createElement("table");
+        table.setAttribute("class", "game_board");
+
+        for (let row = 0; row < rows; row++) {
+            let table_row = document.createElement("tr");
+            for (let col = 0; col < cols; col++) {
+                let table_col = document.createElement("td");
+                table_col.id = row + "_" + col;
+                table_col.innerText = "";
+                table_row.appendChild(table_col);
+            }
+            table.appendChild(table_row);
+        }
+
+        let game_container = document.getElementById("game_container");
+        game_container.appendChild(table);
+        //document.body.appendChild()
+
+        return table;
 
     }
 
-    update_board(){
+    update_board(visible_board) {
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                const current_tile = document.getElementById(row + "_" + col);
+                const mines_count = visible_board[row][col];
+                current_tile.innerText = mines_count;
+                current_tile.setAttribute("class",
+                    this.number_classes(mines_count));
+            }
+        }
 
     }
 
-    clear_board(){
+    /**
+     * 
+     * @param {number} num - number of neighbouring mines
+     * @returns {string} css_class
+     */
+    number_classes(num) {
+        if (num === mine_value) {
+            return "mine";
+        }
+        if (num === null){
+            return "not_opened"
+        }
+        const classes = ["mines_0", "mines_1", "mines_2", "mines_3", "mines_4", "mines_5", "mines_6", "mines_7", "mines_8"];
+        return classes[num];
+    }
+
+    clear_board() {
 
     }
 
-    draw_info(){
+    draw_info() {
 
+    }
+
+    get_table() {
+        return this.table;
+    }
+
+
+}
+
+class Controller {
+    constructor(game, gui) {
+        this.open_tile_listener(gui, game);
+        this.gui.update_board(game.visible_board);
+
+    }
+
+    open_tile_listener(game, gui) {
+        const table = gui.get_table();
+        table.addEventListener("click", (evt) => {
+            console.log(evt.target.id);
+            const selected_id = evt.target.id;
+            if (selected_id) {
+                const tmp_rowcol = selected_id.split("_");
+                let row, col;
+                [row, col] = tmp_rowcol.map((i) => parseInt(i));
+                console.log("row: " + row + " col: " + col);
+                game.open_tile(row, col);
+                gui.update_board(game.visible_board);
+            }
+        });
     }
 
 
@@ -266,9 +351,12 @@ class Html_GUI{
 // TODO: Change input to difficulty
 function start_game(rows, cols, num_mines) {
     const game = new Game(rows, cols, num_mines);
+    const gui = new Html_GUI(rows, cols);
+    const controller = new Controller(gui, game);
 }
 
-start_game(20, 20, 100);
+
+start_game(20, 20, 40);
 
 //var board = new Board(20, 20, 100);
 
