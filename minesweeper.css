@@ -15,9 +15,12 @@
 
 .not_opened_tile{
     background-color: darkgray;
+    border-radius: 2px;
+    box-shadow: black 2px 2px 2px;
 }
 
 .not_opened_tile:hover{
+    
     background-color: gray;
     cursor: pointer;
 }
