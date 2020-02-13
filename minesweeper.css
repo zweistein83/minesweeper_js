@@ -1,35 +1,44 @@
 .game_board{
-    background-color: teal;
+    background-color: slategray;
 }
 
 .game_board  td{
     width: 20px;
-    height: 20px;
-    background-color: darkgray;
+    height: 20px;     
     text-align: center;
     user-select: none;
     font-weight: bold;
 }
 
-.game_board td:hover{
+
+
+
+.not_opened_tile{
+    background-color: darkgray;
+}
+
+.not_opened_tile:hover{
     background-color: gray;
+    cursor: pointer;
 }
 
-/*
- return "mine";
-        }
-        const classes = ["mines_0", "mines_1", "mines_2", "mines_3", "mines_4", "mines_5", "mines_6", "mines_7", "mines_8"];
-        */
-.not_opened{
-    background-color: bisque !important;
+.opened_tile{
+    background-color:  lightgray;
 }
 
-.mine{
-    background-color: red !important; 
+
+
+
+.mine {
+    background-color: red; 
 }
+
+
+
 
 .mines_0{
     color: rgba(0, 0, 0, 0.0);
+    background-color:  lightgray;
 }
 
 .mines_1{

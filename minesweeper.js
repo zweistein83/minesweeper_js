@@ -26,16 +26,8 @@ class Game {
         this.board = new Board(rows, cols, num_mines);
         this.mines = this.board.get_mines();
         this.game_board = this.board.get_board();
-        console.table(this.game_board);
+        //console.table(this.game_board);
         this.visible_board = this.generate_visible_board(this.game_board.length, this.game_board[0].length);
-
-
-        /* TODO:
-            - make mouse listener as input for this
-        */
-
-
-
 
     }
     /**
@@ -56,13 +48,39 @@ class Game {
         return board
     }
 
+    /** 
+     * 
+     * @param {*} row - selected row
+     * @param {*} col - selected column
+     */
     open_tile(row, col) {
+        /*
+        if (this.game_state === "game_over"){
+            return;
+        }
+        */
+        const tile_value = this.game_board[row][col];
+        if (tile_value === -1){
+            this.game_over();            
+        }
+
         this.army_of_ants(row, col, this.visible_board, this.game_board);
-        console.table(this.visible_board);
+        //console.table(this.visible_board);
+    }     
+
+    game_over(){
+        console.log("game_over");
+        this.game_state = "game_over";
+    }
+
+    get_game_state(){
+        return this.game_state;
     }
 
 
-    /**
+    /** Iterates outward in all directions from a given
+     *  row and column recursively. Transfers values from game_board
+     *  to visible_board until a number higher than zero is found.
      * 
      * @param {number} row - selected row
      * @param {number} col -selected column
@@ -117,10 +135,7 @@ class Game {
                 }
             }
         }
-
         ant(row, col);
-
-
     }
 
 }
@@ -135,8 +150,6 @@ class Board {
      */
     constructor(rows, cols, num_mines) {
         this.game_board = [];
-
-
 
         // generate 2d array
         for (let row = 0; row < rows; row++) {
@@ -155,9 +168,6 @@ class Board {
         }
 
         this.populate_board(this.game_board);
-
-
-
 
     }
     /**
@@ -242,18 +252,25 @@ class Board {
 
 }
 
-
+/** Class for rendering the game in html 
+ */
 class Html_GUI {
+    /** Create a Html_GUI object
+     * 
+     * @param {number} rows - Number of rows
+     * @param {number} cols - Number of columns
+     */
     constructor(rows, cols) {
-        this.table = this.draw_board(rows, cols);        
+        this.table = this.draw_board(rows, cols);
         this.rows = rows;
         this.cols = cols;
-
-
     }
 
-
-
+    /** Renders a game-board in html.
+     * 
+     * @param {number} rows - Number of rows
+     * @param {number} cols - Number of columns
+     */
     draw_board(rows, cols) {
         let table = document.createElement("table");
         table.setAttribute("class", "game_board");
@@ -274,15 +291,19 @@ class Html_GUI {
         //document.body.appendChild()
 
         return table;
-
     }
 
+    /** Updates the html board.
+     * 
+     * @param {number[]]} visible_board 
+     */
     update_board(visible_board) {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 const current_tile = document.getElementById(row + "_" + col);
                 const mines_count = visible_board[row][col];
                 current_tile.innerText = mines_count;
+                current_tile.removeAttribute("class");
                 current_tile.setAttribute("class",
                     this.number_classes(mines_count));
             }
@@ -290,8 +311,8 @@ class Html_GUI {
 
     }
 
-    /**
-     * 
+    /** Returns the css-class for a given number of mines.
+     *  
      * @param {number} num - number of neighbouring mines
      * @returns {string} css_class
      */
@@ -299,11 +320,11 @@ class Html_GUI {
         if (num === mine_value) {
             return "mine";
         }
-        if (num === null){
-            return "not_opened"
+        if (num === null) {
+            return "not_opened_tile"
         }
         const classes = ["mines_0", "mines_1", "mines_2", "mines_3", "mines_4", "mines_5", "mines_6", "mines_7", "mines_8"];
-        return classes[num];
+        return classes[num] + " " + "opened_tile";
     }
 
     clear_board() {
@@ -322,12 +343,24 @@ class Html_GUI {
 }
 
 class Controller {
+    /** Creates a controller    
+     * @param {Game} game 
+     * @param {Html_GUI} gui 
+     */
     constructor(game, gui) {
-        this.open_tile_listener(gui, game);
-        this.gui.update_board(game.visible_board);
+        gui.update_board(game.visible_board);
+        this.open_tile_listener(game, gui);
+        
 
     }
 
+    /**
+     * Creates event-listener for mouseclick.
+     * Calls Game-object to open a tile
+     * Calls Html_GUI-object to update the visible board.
+     * @param {Game} game - Game object
+     * @param {Html_GUI} gui - Html_GUI object
+     */
     open_tile_listener(game, gui) {
         const table = gui.get_table();
         table.addEventListener("click", (evt) => {
@@ -337,6 +370,9 @@ class Controller {
                 const tmp_rowcol = selected_id.split("_");
                 let row, col;
                 [row, col] = tmp_rowcol.map((i) => parseInt(i));
+                if(game.get_game_state() === "game_over"){
+                    return;
+                }
                 console.log("row: " + row + " col: " + col);
                 game.open_tile(row, col);
                 gui.update_board(game.visible_board);
@@ -348,11 +384,16 @@ class Controller {
 }
 
 
-// TODO: Change input to difficulty
+/** Starts a game.
+ * 
+ * @param {number} rows 
+ * @param {number} cols 
+ * @param {number} num_mines 
+ */
 function start_game(rows, cols, num_mines) {
-    const game = new Game(rows, cols, num_mines);
-    const gui = new Html_GUI(rows, cols);
-    const controller = new Controller(gui, game);
+    let game = new Game(rows, cols, num_mines);
+    let gui = new Html_GUI(rows, cols);
+    let controller = new Controller(game, gui);
 }
 
 
