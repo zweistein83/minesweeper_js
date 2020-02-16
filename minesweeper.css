@@ -1,5 +1,19 @@
+select{
+    border-radius: 10px;
+}
+
 .game_board{
     background-color: slategray;
+}
+
+.game_container{
+    margin: auto;
+    width: max-content;
+}
+
+.game_header{
+    background-color: slategray;
+    height: 80px;
 }
 
 .game_board  td{

@@ -2,19 +2,17 @@ const mine_value = -1;
 const hidden_value = null;
 const marked_value = 10;
 const wrong_marked_value = 11;
+var difficulty = "medium";
 
 
 
 
-/** Class represents a the game logic of minesweeper. 
- * @todo implement right click (add mine marker)
+/** Class represents a the game logic of minesweeper.  
  * @todo implement middle click (click on number to open neighbouring tiles if mine markers === number) Loop through neighbours check for mine. If not mine open neighbours.
  * @todo implement game over state.
  * @todo implement new game
- * @todo implement different difficulties
- * @todo change visible board to html table to prevent html to redraw everything for each click.
- * @todo change input to difficulty? or leave possibility for custom?
- * @todo cross over wrongly placed flag at game over
+ * @todo implement different difficulties 
+ * @todo change input to difficulty? or leave possibility for custom? 
  */
 class Game {
 
@@ -93,30 +91,38 @@ class Game {
 
     }
 
+    /**
+     * Triggered if clicking on a mine.
+     * Show all mines and hidden tiles.
+     * Show wrongly placed markers.
+     */
     game_over() {
         console.log("game_over");
         this.game_state = "game_over";
         //this.visible_board = this.game_board;
 
-        for (let row = 0; row < this.visible_board.length; row++){
-            for (let col = 0; col < this.visible_board[0].length; col++){
-                
-                if(this.visible_board[row][col] === marked_value){
-                    if (this.game_board[row][col] === mine_value){
+        for (let row = 0; row < this.visible_board.length; row++) {
+            for (let col = 0; col < this.visible_board[0].length; col++) {
+
+                if (this.visible_board[row][col] === marked_value) {
+                    if (this.game_board[row][col] === mine_value) {
                         continue; // flagged correctly. Flag stays.
                     }
-                    else{
+                    else {
                         this.visible_board[row][col] = wrong_marked_value;
                         continue;
                     }
-                    
+
                 }
                 this.visible_board[row][col] = this.game_board[row][col];
-                
+
             }
         }
     }
 
+    /**
+     * @returns {string} Game state
+     */
     get_game_state() {
         return this.game_state;
     }
@@ -306,9 +312,58 @@ class Html_GUI {
      * @param {number} cols - Number of columns
      */
     constructor(rows, cols) {
+        this.clear_board(); // clears the game_container element.
+        this.draw_ui();
         this.table = this.draw_board(rows, cols);
         this.rows = rows;
         this.cols = cols;
+
+    }
+
+    draw_ui() {
+        const button = (btn_txt, action) => {
+            let btn = document.createElement("button");
+            btn.setAttribute("class", "ui_btn");
+            btn.innerText = btn_txt;
+            btn.setAttribute("onclick", action);
+            btn.setAttribute("value", btn_txt);
+            return btn;
+        }
+
+        const select_list = () => {
+            let select_el = document.createElement("select");
+            select_el.id = "game_difficulty";
+            //select_el.setAttribute("value", "medium");
+            select_el.setAttribute("onchange", "set_difficulty();");
+            select_el.setAttribute("onfocus", "this.selectedIndex = -1;");
+
+            const add_option = (value) => {
+                let elem = document.createElement("option");
+                elem.setAttribute("value", value);
+                if (difficulty === value){
+                    elem.setAttribute("selected","selected");
+                }
+                elem.id = "d_" + value;
+                elem.innerText = value;
+                select_el.appendChild(elem);
+            }
+            add_option("easy");
+            add_option("medium");
+            add_option("hard");
+
+            return select_el;
+
+        }
+
+        let ui_element = document.createElement("div");
+        //ui_element.innerText = "Test";
+        ui_element.setAttribute("class", "game_header");
+        // ui_element.appendChild(button("test", 'start_game(10,10,10);'));
+        ui_element.appendChild(select_list());
+
+        let game_container = document.getElementById("game_container");
+        game_container.appendChild(ui_element);
+
     }
 
     /** Renders a game-board in html.
@@ -380,7 +435,14 @@ class Html_GUI {
         return classes[num] + " " + "opened_tile";
     }
 
+    /**
+     * Clears table.
+     */
     clear_board() {
+        let game_container = document.getElementById("game_container");
+        while (game_container.firstChild) {
+            game_container.removeChild(game_container.firstChild);
+        }
 
     }
 
@@ -388,6 +450,9 @@ class Html_GUI {
 
     }
 
+    /**
+     * @returns {element} html DOM table
+     */
     get_table() {
         return this.table;
     }
@@ -479,20 +544,56 @@ class Controller {
 }
 
 
+
 /** Starts a game.
  * 
  * @param {number} rows 
  * @param {number} cols 
  * @param {number} num_mines 
  */
-function start_game(rows, cols, num_mines) {
+function start_game() {
+    const easy = [15, 15, 30];
+    const medium = [20, 20, 100];
+    const hard = [25, 20, 200];
+    let rows, cols, num_mines;
+
+    if (difficulty === "easy") {
+        [rows, cols, num_mines] = easy;
+    }
+    else if (difficulty === "medium") {
+        [rows, cols, num_mines] = medium;
+    }
+    else if (difficulty === "hard") {
+        [rows, cols, num_mines] = hard;
+    }
+
+
     let game = new Game(rows, cols, num_mines);
     let gui = new Html_GUI(rows, cols);
     let controller = new Controller(game, gui);
 }
 
 
-start_game(20, 20, 40);
+
+function set_difficulty() {
+    difficulty = document.getElementById("game_difficulty").value;
+    start_game();
+
+    /*
+    if (difficulty === "easy") {
+        start_game(15, 15, 30);
+    }
+    else if (difficulty === "medium") {
+        start_game(20, 20, 100);
+    }
+    else {
+        start_game(25, 20, 200);
+    }
+    */
+}
+
+
+start_game();
 
 //var board = new Board(20, 20, 100);
 
