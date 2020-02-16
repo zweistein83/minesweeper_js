@@ -1,11 +1,12 @@
 const mine_value = -1;
 const hidden_value = null;
+const marked_value = 10;
+const wrong_marked_value = 11;
 
 
 
 
 /** Class represents a the game logic of minesweeper. 
- * @todo implement left click (open)
  * @todo implement right click (add mine marker)
  * @todo implement middle click (click on number to open neighbouring tiles if mine markers === number) Loop through neighbours check for mine. If not mine open neighbours.
  * @todo implement game over state.
@@ -13,6 +14,7 @@ const hidden_value = null;
  * @todo implement different difficulties
  * @todo change visible board to html table to prevent html to redraw everything for each click.
  * @todo change input to difficulty? or leave possibility for custom?
+ * @todo cross over wrongly placed flag at game over
  */
 class Game {
 
@@ -26,6 +28,7 @@ class Game {
         this.board = new Board(rows, cols, num_mines);
         this.mines = this.board.get_mines();
         this.game_board = this.board.get_board();
+        this.game_state = "alive";
         //console.table(this.game_board);
         this.visible_board = this.generate_visible_board(this.game_board.length, this.game_board[0].length);
 
@@ -60,20 +63,61 @@ class Game {
         }
         */
         const tile_value = this.game_board[row][col];
-        if (tile_value === -1){
-            this.game_over();            
+        if (this.visible_board[row][col] === marked_value) {
+            console.log("MARKED");
+            return;
         }
+        else if (tile_value === -1) {
+            this.game_over();
+        }
+
+
 
         this.army_of_ants(row, col, this.visible_board, this.game_board);
         //console.table(this.visible_board);
-    }     
-
-    game_over(){
-        console.log("game_over");
-        this.game_state = "game_over";
     }
 
-    get_game_state(){
+    /** Toggles marked value and hidden value on a tile.
+     *  Used to add flags for user to mark a potential mine.
+     * 
+     * @param {number} row 
+     * @param {number} col 
+     */
+    mark_mine(row, col) {
+        if (this.visible_board[row][col] === null) {
+            this.visible_board[row][col] = marked_value;
+        }
+        else if (this.visible_board[row][col] === marked_value) {
+            this.visible_board[row][col] = hidden_value;
+        }
+
+    }
+
+    game_over() {
+        console.log("game_over");
+        this.game_state = "game_over";
+        //this.visible_board = this.game_board;
+
+        for (let row = 0; row < this.visible_board.length; row++){
+            for (let col = 0; col < this.visible_board[0].length; col++){
+                
+                if(this.visible_board[row][col] === marked_value){
+                    if (this.game_board[row][col] === mine_value){
+                        continue; // flagged correctly. Flag stays.
+                    }
+                    else{
+                        this.visible_board[row][col] = wrong_marked_value;
+                        continue;
+                    }
+                    
+                }
+                this.visible_board[row][col] = this.game_board[row][col];
+                
+            }
+        }
+    }
+
+    get_game_state() {
         return this.game_state;
     }
 
@@ -151,6 +195,7 @@ class Board {
     constructor(rows, cols, num_mines) {
         this.game_board = [];
 
+        // TODO: MOVE THIS TO NEW METHOD
         // generate 2d array
         for (let row = 0; row < rows; row++) {
             this.game_board[row] = [];
@@ -317,6 +362,14 @@ class Html_GUI {
      * @returns {string} css_class
      */
     number_classes(num) {
+        if (num === marked_value) {
+            return ("mine_marker");
+        }
+
+        if (num === wrong_marked_value) {
+            return ("wrong_mine_marker");
+        }
+
         if (num === mine_value) {
             return "mine";
         }
@@ -350,7 +403,23 @@ class Controller {
     constructor(game, gui) {
         gui.update_board(game.visible_board);
         this.open_tile_listener(game, gui);
-        
+        this.mark_mine_listener(game, gui);
+
+
+    }
+
+    /** Converts a string of type "row_column"
+     *  to array with [row, column].
+     * @param {event} evt 
+     * @returns {number[]} row and column
+     */
+    get_position_from_evt(evt) {
+        const selected_id = evt.target.id;
+
+        const tmp_rowcol = selected_id.split("_");
+        let row, col;
+        [row, col] = tmp_rowcol.map((i) => parseInt(i));
+        return [row, col];
 
     }
 
@@ -365,19 +434,45 @@ class Controller {
         const table = gui.get_table();
         table.addEventListener("click", (evt) => {
             console.log(evt.target.id);
+            /* const selected_id = evt.target.id;
+            if (selected_id) {
+                const tmp_rowcol = selected_id.split("_"); */
             const selected_id = evt.target.id;
             if (selected_id) {
-                const tmp_rowcol = selected_id.split("_");
                 let row, col;
-                [row, col] = tmp_rowcol.map((i) => parseInt(i));
-                if(game.get_game_state() === "game_over"){
+                //[row, col] = tmp_rowcol.map((i) => parseInt(i));
+                [row, col] = this.get_position_from_evt(evt);
+                if (game.get_game_state() === "game_over") {
                     return;
                 }
                 console.log("row: " + row + " col: " + col);
                 game.open_tile(row, col);
                 gui.update_board(game.visible_board);
             }
+
         });
+    }
+    /** Creates an eventListener for right click.
+     * Toggles marking the position with a flag and removing flag.
+     * 
+     * @param {Game} game 
+     * @param {Html_GUI} gui 
+     */
+    mark_mine_listener(game, gui) {
+        const table = gui.get_table();
+        table.addEventListener("contextmenu", (evt) => {
+            evt.preventDefault();
+
+            const selected_id = evt.target.id;
+            if (selected_id) {
+                let row, col;
+                [row, col] = this.get_position_from_evt(evt);
+                console.log("mark mine row: " + row + " col: " + col);
+                game.mark_mine(row, col);
+                gui.update_board(game.visible_board);
+            }
+        });
+
     }
 
 

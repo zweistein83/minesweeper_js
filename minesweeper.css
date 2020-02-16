@@ -30,10 +30,35 @@
 }
 
 
+.mine_marker{
+    /*https://css-tricks.com/css-image-replacement/*/
+    height: 20px;
+    width: 20px;    
+    background: url('img/flag.png') no-repeat;
+    background-size: contain;
+    text-indent: -9999px;
+    cursor: help;
+    background-color: darkgray !important;
+}
 
+.wrong_mine_marker{
+    /*https://css-tricks.com/css-image-replacement/*/
+    height: 20px;
+    width: 20px;    
+    background: url('img/flag_crossed.png') no-repeat;
+    background-size: contain;
+    /*text-indent: -9999px;*/
+    cursor: help;
+    background-color: darkgray !important;
+}
 
 .mine {
-    background-color: red; 
+    background-color: red !important; 
+    height: 20px;
+    width: 20px;    
+    background: url('img/mine.png') no-repeat;
+    background-size: contain;
+    text-indent: -9999px;
 }
 
 
