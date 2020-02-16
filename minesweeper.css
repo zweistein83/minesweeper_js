@@ -47,7 +47,7 @@
     width: 20px;    
     background: url('img/flag_crossed.png') no-repeat;
     background-size: contain;
-    /*text-indent: -9999px;*/
+    text-indent: -9999px;*/
     cursor: help;
     background-color: darkgray !important;
 }
