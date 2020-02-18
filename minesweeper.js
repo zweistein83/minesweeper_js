@@ -3,13 +3,13 @@ const hidden_value = null;
 const marked_value = 10;
 const wrong_marked_value = 11;
 var difficulty = "medium";
+var interval_ref = null;
 
 
 
 
 /** Class represents a the game logic of minesweeper.  
  * @todo implement middle click (click on number to open neighbouring tiles if mine markers === number) Loop through neighbours check for mine. If not mine open neighbours.
- * @todo implement game over state.
  * @todo implement new game
  * @todo implement different difficulties 
  * @todo change input to difficulty? or leave possibility for custom? 
@@ -23,6 +23,7 @@ class Game {
      * @param {number} num_mines - how many mines to add
      */
     constructor(rows, cols, num_mines) {
+        this.mine_counter = num_mines;
         this.board = new Board(rows, cols, num_mines);
         this.mines = this.board.get_mines();
         this.game_board = this.board.get_board();
@@ -31,6 +32,11 @@ class Game {
         this.visible_board = this.generate_visible_board(this.game_board.length, this.game_board[0].length);
 
     }
+
+    stop_timer(){
+        window.clearInterval(interval_ref);
+    }
+    
     /**
      * 
      * @param {number} rows - number of rows
@@ -73,11 +79,11 @@ class Game {
 
 
         this.army_of_ants(row, col, this.visible_board, this.game_board);
-        
-        
+
+
         if (this.are_all_tiles_open()) {
             this.game_won();
-            
+
         };
         //console.table(this.visible_board);
     }
@@ -89,14 +95,18 @@ class Game {
      * @param {number} col 
      */
     mark_mine(row, col) {
-        if (this.game_state !== "alive"){
+        if (this.game_state !== "alive") {
             return;
         }
         if (this.visible_board[row][col] === null) {
             this.visible_board[row][col] = marked_value;
+            this.mine_counter--;
+            console.log(this.mine_counter);
         }
         else if (this.visible_board[row][col] === marked_value) {
             this.visible_board[row][col] = hidden_value;
+            this.mine_counter++;
+            console.log(this.mine_counter);
         }
 
     }
@@ -127,7 +137,7 @@ class Game {
      * Triggered if all tiles are opened except for mines.
      */
     game_won() {
-        if(this.game_state !== "alive"){
+        if (this.game_state !== "alive") {
             return;
         }
 
@@ -147,6 +157,7 @@ class Game {
 
             }
         }
+        this.stop_timer();
         this.game_state = "won";
         alert("You won!");
     }
@@ -157,7 +168,7 @@ class Game {
      * Show wrongly placed markers.
      */
     game_over() {
-        if(this.game_state !== "alive"){
+        if (this.game_state !== "alive") {
             return;
         }
         console.log("game_over");
@@ -181,6 +192,7 @@ class Game {
 
             }
         }
+        this.stop_timer();
         alert("Game over!");
     }
 
@@ -303,7 +315,7 @@ class Board {
     */
     mine_coord_generator(num_mines, rows, cols) {
         let mines = [];
-        while (mines.length < num_mines) {
+        while (mines.length <= num_mines) {
             let mine_coord = [this.random_int(rows), this.random_int(cols)];
             if (!mines.includes(mine_coord)) // prevents duplicates
                 mines.push(mine_coord);
@@ -532,10 +544,34 @@ class Controller {
     constructor(game, gui) {
         gui.update_board(game.visible_board);
         this.open_tile_listener(game, gui);
-        this.mark_mine_listener(game, gui);
+        this.mark_mine_listener(game, gui);        
+        this.game_started = false;
 
 
     }
+
+    create_timer() {
+        const start_time = Date.now();
+        window.clearInterval(interval_ref);
+        interval_ref = window.setInterval(() => {
+            let time_now = Date.now();
+            console.log("tick")
+            let elapsed_seconds = Math.floor((time_now - start_time) / 1000);
+            console.log(elapsed_seconds);
+
+        }, 1000);
+    }
+
+    first_tile_opened(){
+        if(!this.game_started){
+            this.game_started = true;
+            this.create_timer();            
+        }
+    }
+
+    
+
+    
 
     /** Converts a string of type "row_column"
      *  to array with [row, column].
@@ -575,8 +611,10 @@ class Controller {
                     return;
                 }
                 console.log("row: " + row + " col: " + col);
+                
                 game.open_tile(row, col);
                 gui.update_board(game.visible_board);
+                this.first_tile_opened();
             }
 
         });
