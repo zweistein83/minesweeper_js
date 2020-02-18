@@ -5,26 +5,35 @@ class Controller {
      */
     constructor(game, gui) {
         gui.update_board(game.visible_board);
+        
         this.open_tile_listener(game, gui);
         this.mark_mine_listener(game, gui);        
         this.game_started = false;
+        this.game = game;
+        this.update_ui();
+        window.clearInterval(interval_ref);
 
 
     }
+    update_ui(){
+        document.getElementById("mine_counter_field").innerText = this.game.get_mine_counter();
+    }
+    
 
     create_timer() {
         const start_time = Date.now();
-        window.clearInterval(interval_ref);
+        const interval_length = 500; // milliseconds
+        
         interval_ref = window.setInterval(() => {
             let time_now = Date.now();
             //console.log("tick")
-            let elapsed_seconds = Math.floor((time_now - start_time) / 500);
+            let elapsed_seconds = Math.floor((time_now - start_time) / 1000);
             //console.log(elapsed_seconds);
             const timer_el = document.getElementById("timer_field");
             timer_el.innerText = elapsed_seconds;
 
 
-        }, 1000);
+        }, interval_length);
     }
 
     first_tile_opened(){
@@ -80,6 +89,7 @@ class Controller {
                 game.open_tile(row, col);
                 gui.update_board(game.visible_board);
                 this.first_tile_opened();
+                this.update_ui();
             }
 
         });
@@ -102,6 +112,7 @@ class Controller {
                 console.log("mark mine row: " + row + " col: " + col);
                 game.mark_mine(row, col);
                 gui.update_board(game.visible_board);
+                this.update_ui();
             }
         });
 

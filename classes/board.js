@@ -39,13 +39,19 @@ class Board {
     }
 
     /** 
-    *   Generates an array of mine coordinates. 
+    *   Generates an array of unique mine coordinates. 
     *   @param {number} num_mines - number of mine coordinates to be generated
     *   @param {number} rows - number of rows in game board
     *   @param {number} cols - number of columns in game board
     *   @returns {number[]} an array of random unique coordinates
     */
     mine_coord_generator(num_mines, rows, cols) {
+        
+        /** Checks if new value is unique.
+         * 
+         * @param {Array.<!number, !number>} value - mine coordinate [row,col]
+         * @param {Array.<Array.<!number, !number>>} arr - array of mine coordinates
+         */
         const is_unique = (value, arr) => {
             const value_str = value.toString();
             for (let el of arr) {

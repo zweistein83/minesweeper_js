@@ -1,20 +1,53 @@
-select{
-    border-radius: 10px;
+.ui_container{
+    display:table;
+    background-color: slategray;
+    
+    width: 100%;
 }
+.game_header{
+    display: table-row;
+    height: 80px;
+    
+    
+}
+
+select{
+    display: table-cell;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+
+.mine_counter_field{ 
+    display: table-cell;
+    padding-right: 10px;
+    text-align: right;   
+    font-size: xx-large;
+    
+    
+}
+
+
+.timer_field{ 
+    display: table-cell;
+    padding-right: 10px;
+    text-align: right;   
+    font-size: xx-large; 
+    
+}
+
+
+
 
 .game_board{
     background-color: slategray;
 }
 
 .game_container{
+    
     margin: auto;
     width: max-content;
 }
 
-.game_header{
-    background-color: slategray;
-    height: 80px;
-}
 
 .game_board  td{
     width: 20px;

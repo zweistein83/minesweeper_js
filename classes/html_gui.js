@@ -25,12 +25,15 @@ class Html_GUI {
             return btn;
         }
 
-        const timer_field = ()=>{
-            let timer_el = document.createElement("span");
-            timer_el.id = "timer_field";
+        const text_field = (txt)=>{
+            let timer_el = document.createElement("div");
+            timer_el.id = txt;
             timer_el.innerText = "0";
+            timer_el.setAttribute("class", txt);
             return timer_el;
         }
+
+        
 
         const select_list = () => {
             let select_el = document.createElement("select");
@@ -56,16 +59,20 @@ class Html_GUI {
             return select_el;
 
         }
-
+        let ui_container = document.createElement("div");
+        ui_container.setAttribute("class", "ui_container");
         let ui_element = document.createElement("div");
         //ui_element.innerText = "Test";
         ui_element.setAttribute("class", "game_header");
         // ui_element.appendChild(button("test", 'start_game(10,10,10);'));
         ui_element.appendChild(select_list());
 
-        ui_element.appendChild(timer_field());
+        ui_element.appendChild(text_field("mine_counter_field"));
+        ui_element.appendChild(text_field("timer_field"));
+
+        ui_container.appendChild(ui_element);
         let game_container = document.getElementById("game_container");
-        game_container.appendChild(ui_element);
+        game_container.appendChild(ui_container);
 
     }
 
@@ -111,6 +118,8 @@ class Html_GUI {
                     this.number_classes(mines_count));
             }
         }
+
+        
 
     }
 

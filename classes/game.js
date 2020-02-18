@@ -254,4 +254,8 @@ class Game {
         ant(row, col);
     }
 
+    get_mine_counter(){
+        return this.mine_counter;
+    }
+
 }
