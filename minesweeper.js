@@ -67,11 +67,18 @@ class Game {
         }
         else if (tile_value === -1) {
             this.game_over();
+            return;
         }
 
 
 
         this.army_of_ants(row, col, this.visible_board, this.game_board);
+        
+        
+        if (this.are_all_tiles_open()) {
+            this.game_won();
+            alert("GAME WON!");
+        };
         //console.table(this.visible_board);
     }
 
@@ -89,6 +96,52 @@ class Game {
             this.visible_board[row][col] = hidden_value;
         }
 
+    }
+
+    /** Checks if all tiles exept for mines are opened
+     * @returns {boolean} all tiles are open
+     */
+    are_all_tiles_open() {
+        for (let row = 0; row < this.game_board.length; row++) {
+            for (let col = 0; col < this.game_board[0].length; col++) {
+                let visible_board_tile = this.visible_board[row][col];
+                let game_board_tile = this.game_board[row][col];
+
+                if (game_board_tile !== visible_board_tile) {
+                    if (game_board_tile === mine_value) {
+                        continue;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Triggered if all tiles are opened except for mines.
+     */
+    game_won() {
+
+        for (let row = 0; row < this.visible_board.length; row++) {
+            for (let col = 0; col < this.visible_board[0].length; col++) {
+                if (this.game_board[row][col] === mine_value) {
+                    if (this.visible_board[row][col] === marked_value) {
+                        continue; // flagged correctly. Flag stays.
+                    }
+                    else {
+                        this.visible_board[row][col] = marked_value;
+                    }
+                }
+                else {
+                    this.visible_board[row][col] = this.game_board[row][col];
+                }
+
+            }
+        }
+        this.game_state = "won";
     }
 
     /**
@@ -340,8 +393,8 @@ class Html_GUI {
             const add_option = (value) => {
                 let elem = document.createElement("option");
                 elem.setAttribute("value", value);
-                if (difficulty === value){
-                    elem.setAttribute("selected","selected");
+                if (difficulty === value) {
+                    elem.setAttribute("selected", "selected");
                 }
                 elem.id = "d_" + value;
                 elem.innerText = value;
@@ -577,7 +630,7 @@ function start_game() {
 
 function set_difficulty() {
     difficulty = document.getElementById("game_difficulty").value;
-    start_game();    
+    start_game();
 }
 
 
