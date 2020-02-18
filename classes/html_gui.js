@@ -25,6 +25,13 @@ class Html_GUI {
             return btn;
         }
 
+        const timer_field = ()=>{
+            let timer_el = document.createElement("span");
+            timer_el.id = "timer_field";
+            timer_el.innerText = "0";
+            return timer_el;
+        }
+
         const select_list = () => {
             let select_el = document.createElement("select");
             select_el.id = "game_difficulty";
@@ -56,6 +63,7 @@ class Html_GUI {
         // ui_element.appendChild(button("test", 'start_game(10,10,10);'));
         ui_element.appendChild(select_list());
 
+        ui_element.appendChild(timer_field());
         let game_container = document.getElementById("game_container");
         game_container.appendChild(ui_element);
 

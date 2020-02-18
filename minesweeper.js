@@ -5,16 +5,6 @@ const wrong_marked_value = 11;
 var difficulty = "medium";
 var interval_ref = null;
 
-
-
-
-
-
-
-
-
-
-
 /** Starts a game.
  * 
  * @param {number} rows 

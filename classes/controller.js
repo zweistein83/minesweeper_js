@@ -17,9 +17,12 @@ class Controller {
         window.clearInterval(interval_ref);
         interval_ref = window.setInterval(() => {
             let time_now = Date.now();
-            console.log("tick")
-            let elapsed_seconds = Math.floor((time_now - start_time) / 1000);
-            console.log(elapsed_seconds);
+            //console.log("tick")
+            let elapsed_seconds = Math.floor((time_now - start_time) / 500);
+            //console.log(elapsed_seconds);
+            const timer_el = document.getElementById("timer_field");
+            timer_el.innerText = elapsed_seconds;
+
 
         }, 1000);
     }

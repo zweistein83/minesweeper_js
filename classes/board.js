@@ -46,11 +46,23 @@ class Board {
     *   @returns {number[]} an array of random unique coordinates
     */
     mine_coord_generator(num_mines, rows, cols) {
+        const is_unique = (value, arr) => {
+            const value_str = value.toString();
+            for (let el of arr) {
+                if (el.toString() === value_str) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         let mines = [];
-        while (mines.length <= num_mines) {
+        while (mines.length < num_mines) {
             let mine_coord = [this.random_int(rows), this.random_int(cols)];
-            if (!mines.includes(mine_coord)) // prevents duplicates
+            if (is_unique(mine_coord, mines)) {
                 mines.push(mine_coord);
+            }
+
         }
         return mines;
     }
