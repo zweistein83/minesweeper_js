@@ -77,7 +77,7 @@ class Game {
         
         if (this.are_all_tiles_open()) {
             this.game_won();
-            alert("GAME WON!");
+            
         };
         //console.table(this.visible_board);
     }
@@ -89,6 +89,9 @@ class Game {
      * @param {number} col 
      */
     mark_mine(row, col) {
+        if (this.game_state !== "alive"){
+            return;
+        }
         if (this.visible_board[row][col] === null) {
             this.visible_board[row][col] = marked_value;
         }
@@ -124,6 +127,9 @@ class Game {
      * Triggered if all tiles are opened except for mines.
      */
     game_won() {
+        if(this.game_state !== "alive"){
+            return;
+        }
 
         for (let row = 0; row < this.visible_board.length; row++) {
             for (let col = 0; col < this.visible_board[0].length; col++) {
@@ -142,6 +148,7 @@ class Game {
             }
         }
         this.game_state = "won";
+        alert("You won!");
     }
 
     /**
@@ -150,6 +157,9 @@ class Game {
      * Show wrongly placed markers.
      */
     game_over() {
+        if(this.game_state !== "alive"){
+            return;
+        }
         console.log("game_over");
         this.game_state = "game_over";
         //this.visible_board = this.game_board;
@@ -171,6 +181,7 @@ class Game {
 
             }
         }
+        alert("Game over!");
     }
 
     /**
