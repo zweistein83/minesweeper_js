@@ -552,9 +552,9 @@ class Controller {
  * @param {number} num_mines 
  */
 function start_game() {
-    const easy = [15, 15, 30];
-    const medium = [20, 20, 100];
-    const hard = [25, 20, 200];
+    const easy = [10, 10, 10];
+    const medium = [15, 13, 40];
+    const hard = [30, 16, 99];
     let rows, cols, num_mines;
 
     if (difficulty === "easy") {
@@ -577,19 +577,7 @@ function start_game() {
 
 function set_difficulty() {
     difficulty = document.getElementById("game_difficulty").value;
-    start_game();
-
-    /*
-    if (difficulty === "easy") {
-        start_game(15, 15, 30);
-    }
-    else if (difficulty === "medium") {
-        start_game(20, 20, 100);
-    }
-    else {
-        start_game(25, 20, 200);
-    }
-    */
+    start_game();    
 }
 
 
