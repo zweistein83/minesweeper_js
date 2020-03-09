@@ -1,20 +1,24 @@
+button{
+    border-radius: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
 .ui_container{
     display:table;
-    background-color: slategray;
-    
+    background-color: slategray;  
     width: 100%;
 }
 .game_header{
     display: table-row;
-    height: 80px;
-    
-    
+    height: 80px; 
 }
 
 select{
     display: table-cell;
     border-radius: 10px;
     margin-left: 10px;
+    cursor: pointer;
 }
 
 .mine_counter_field{ 

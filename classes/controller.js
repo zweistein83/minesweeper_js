@@ -5,9 +5,9 @@ class Controller {
      */
     constructor(game, gui) {
         gui.update_board(game.visible_board);
-        
+
         this.open_tile_listener(game, gui);
-        this.mark_mine_listener(game, gui);        
+        this.mark_mine_listener(game, gui);
         this.game_started = false;
         this.game = game;
         this.update_ui();
@@ -15,15 +15,20 @@ class Controller {
 
 
     }
-    update_ui(){
-        document.getElementById("mine_counter_field").innerText = this.game.get_mine_counter();
+    update_ui() {
+
+        if (this.game.get_game_state() === "won") {
+            document.getElementById("mine_counter_field").innerText = 0;
+        } else {
+            document.getElementById("mine_counter_field").innerText = this.game.get_mine_counter();
+        }
     }
-    
+
 
     create_timer() {
         const start_time = Date.now();
         const interval_length = 500; // milliseconds
-        
+
         interval_ref = window.setInterval(() => {
             let time_now = Date.now();
             //console.log("tick")
@@ -36,16 +41,16 @@ class Controller {
         }, interval_length);
     }
 
-    first_tile_opened(){
-        if(!this.game_started){
+    first_tile_opened() {
+        if (!this.game_started) {
             this.game_started = true;
-            this.create_timer();            
+            this.create_timer();
         }
     }
 
-    
 
-    
+
+
 
     /** Converts a string of type "row_column"
      *  to array with [row, column].
@@ -85,7 +90,7 @@ class Controller {
                     return;
                 }
                 console.log("row: " + row + " col: " + col);
-                
+
                 game.open_tile(row, col);
                 gui.update_board(game.visible_board);
                 this.first_tile_opened();

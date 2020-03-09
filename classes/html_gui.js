@@ -66,9 +66,10 @@ class Html_GUI {
         ui_element.setAttribute("class", "game_header");
         // ui_element.appendChild(button("test", 'start_game(10,10,10);'));
         ui_element.appendChild(select_list());
-
+        ui_element.appendChild(button("Restart", "start_game();"));
         ui_element.appendChild(text_field("mine_counter_field"));
         ui_element.appendChild(text_field("timer_field"));
+
 
         ui_container.appendChild(ui_element);
         let game_container = document.getElementById("game_container");

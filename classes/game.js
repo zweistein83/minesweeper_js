@@ -146,7 +146,8 @@ class Game {
                 }
 
             }
-        }
+        }        
+        this.mine_counter = 0;
         this.stop_timer();
         this.game_state = "won";
         alert("You won!");
