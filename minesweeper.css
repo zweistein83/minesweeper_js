@@ -17,6 +17,7 @@ button{
 select{
     display: table-cell;
     border-radius: 10px;
+    margin-top: 10px;
     margin-left: 10px;
     cursor: pointer;
 }
@@ -25,9 +26,14 @@ select{
     display: table-cell;
     padding-right: 10px;
     text-align: right;   
+    font-size: small; 
+    
+    
+}
+
+.mine_counter_field > div{ 
+    
     font-size: xx-large;
-    
-    
 }
 
 
@@ -35,6 +41,12 @@ select{
     display: table-cell;
     padding-right: 10px;
     text-align: right;   
+    font-size: small; 
+    
+}
+
+.timer_field > div{ 
+    
     font-size: xx-large; 
     
 }
@@ -43,7 +55,7 @@ select{
 
 
 .game_board{
-    background-color: slategray;
+    background-color: rgb(0, 0, 0);
 }
 
 .game_container{
@@ -65,9 +77,9 @@ select{
 
 
 .not_opened_tile{
-    background-color: darkgray;
-    border-radius: 2px;
-    box-shadow: black 2px 2px 2px;
+    background-color: rgb(135, 138, 125);
+    border-radius: 1px;
+    box-shadow:   0px 0px  3px rgb(44, 33, 3);
 }
 
 .not_opened_tile:hover{

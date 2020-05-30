@@ -25,12 +25,16 @@ class Html_GUI {
             return btn;
         }
 
-        const text_field = (txt)=>{
-            let timer_el = document.createElement("div");
-            timer_el.id = txt;
-            timer_el.innerText = "0";
-            timer_el.setAttribute("class", txt);
-            return timer_el;
+        const text_field = (txt, label)=>{
+            let text_el = document.createElement("div");
+            
+            let dynamic_text = document.createElement("div");
+            text_el.innerText= label;
+            dynamic_text.id = txt;
+            dynamic_text.innerText = "0";
+            text_el.setAttribute("class", txt);
+            text_el.appendChild(dynamic_text);
+            return text_el;
         }
 
         
@@ -67,8 +71,8 @@ class Html_GUI {
         // ui_element.appendChild(button("test", 'start_game(10,10,10);'));
         ui_element.appendChild(select_list());
         ui_element.appendChild(button("Restart", "start_game();"));
-        ui_element.appendChild(text_field("mine_counter_field"));
-        ui_element.appendChild(text_field("timer_field"));
+        ui_element.appendChild(text_field("mine_counter_field", "Mines:"));
+        ui_element.appendChild(text_field("timer_field", "Time:"));
 
 
         ui_container.appendChild(ui_element);
